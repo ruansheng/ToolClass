@@ -22,7 +22,7 @@ class RedisService {
 	 *  redis handler
 	 * @var resource
 	 */
-	private static $handler;
+	public static $handler;
 	
     /**
      * getInstance
@@ -45,28 +45,11 @@ class RedisService {
     		return $redis;
     }
     
-    /**
-     * get set value
-     * @param string $key
-     */
-    public function getSet($key){
-    		
-    }
-    
-    /**
-     * add set value
-     * @param string $key
-     */
-    public function addSet($key,$val){
-    		
-    }	
-    
-    /**
-     * rm set value
-     * @param string $key
-     */
-    public function rmSet($key){
-    
-    }
-    
 }
+
+#### example ###
+
+$redis=RedisService::getInstance();
+
+
+
