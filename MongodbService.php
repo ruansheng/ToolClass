@@ -85,14 +85,84 @@ class MongodbService {
     }
     
     /**
+     * distinect
+     * @param string $key
+     */
+    public function distinect($where){
+	    	$collection=self::$collection;
+	    	$flag=$collection->distinect($where);
+	    	return $flag;
+    }
+    
+    /**
+     * drop collection
+     * @param string $key
+     */
+    public function dropCollection(){
+	    	$collection=self::$collection;
+	    	$flag=$collection->drop();
+	    	return $flag;
+    }
+    
+    /**
+     * collection count
+     * @param string $key
+     */
+    public function count($where){
+	    	$collection=self::$collection;
+	    	$count=$collection->count($where);
+	    	return $count;
+    }
+    
+    /**
      * add set value
      * @param string $key
      */
     public function insert($document){
 	    	$collection=self::$collection;
-	    	$collection->insert($document);
-	    	return true;
-    }	
+	    $flag=$collection->insert($document);
+	    	return $flag;
+    }
+
+    /**
+     * update value
+     * @param string $key
+     */
+    public function update($where,$document){
+	    	$collection=self::$collection;
+	    	$flag=$collection->update($where,$document);
+	    	return $flag;
+    }
+    
+    /**
+     * save set value
+     * @param string $key
+     */
+    public function save($document){
+	    	$collection=self::$collection;
+	    	$flag=$collection->save($document);
+	    	return $flag;
+    }
+    
+    /**
+     * delete value
+     * @param string $key
+     */
+    public function delete($where,$justOne=true){
+	    	$collection=self::$collection;
+	    	$flag=$collection->remove($where,array('justOne'=>$justOne));
+	    	return $flag;
+    }
+    
+    /**
+     * select all
+     * @return $array
+     */
+    public function findOne($where,$field){
+	    	$collection=self::$collection;
+	    	$row = $collection->findOne($where,$field);
+	    	return $row;
+    }
     
     /**
      * select all
