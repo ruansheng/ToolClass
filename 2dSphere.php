@@ -5,6 +5,7 @@
  * @param float $lat1 纬度值1
  * @param float $lng2 经度值2
  * @param float $lat2 纬度值2
+ * @return int  单位:米
  */
 function getDistance($lng1,$lat1, $lng2,$lat2)
 {
@@ -24,6 +25,8 @@ function getDistance($lng1,$lat1, $lng2,$lat2)
 
 	return round($calculatedDistance);
 }
+
+//------------------------- php mongodb -------------------------------------
 
 $mongo=new Mongo("mongodb://127.0.0.1:27017",array('connect'=>true));
 $db = $mongo->test; //得到一个db对象
