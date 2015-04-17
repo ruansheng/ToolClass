@@ -32,5 +32,6 @@ ToolClass
 
 [socket server | client](https://github.com/ruansheng/ToolClass/blob/master/socket.php)
 
+[mongodb LBS 运用测试](https://github.com/ruansheng/ToolClass/blob/master/2dSphere.php)
 
 
