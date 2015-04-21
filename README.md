@@ -34,4 +34,5 @@ ToolClass
 
 [mongodb LBS 运用测试](https://github.com/ruansheng/ToolClass/blob/master/2dSphere.php)
 
+[memcache hash一致性](https://github.com/ruansheng/ToolClass/blob/master/MemcacheHash.php)
 
