@@ -1,14 +1,38 @@
 <?php
+/**
+ * Memcache Hash consistent
+ * @author ruansheng
+ */
 class memcacheHash{
 
+	/**
+	 * 所有虚拟节点array
+	 * @var array
+	 */
 	private static $_node = array();
 
+	/**
+	 * 所有虚拟节点 key array
+	 * @var array
+	 */
 	private static $_nodeData = array();
 
+	/**
+	 * 当前key的crc32校验值
+	 * @var string
+	 */
 	private static $_keyNode = 0;
 
+	/**
+	 * memcache handler arrays
+	 * @var array
+	 */
 	private static $_memcache = null;
 
+	/**
+	 * 每个memcache的虚拟节点
+	 * @var int
+	 */
 	private $_virtualNodeNum = 200;
 
 	/**
@@ -16,7 +40,7 @@ class memcacheHash{
 	 * @throws Exception
 	 */
 	private function __construct() {
-		$config = array(//五个memcache服务器
+		$config = array(
 			'127.0.0.1:11211',
 			'127.0.0.1:11212',
 			'127.0.0.1:11213',
@@ -56,6 +80,7 @@ class memcacheHash{
 		self::$_nodeData=array_keys(self::$_node);
 		self::$_keyNode=sprintf('%u',crc32($key));
 		$nodeKey=self::_findServerNode();
+		
 		if(self::$_keyNode>end(self::$_nodeData)){
 			self::$_keyNode=end(self::$_nodeData);
 			$nodeKey2=self::_findServerNode();
@@ -63,18 +88,19 @@ class memcacheHash{
 				$nodeKey=$nodeKey2;
 			}
 		}
-		
+		echo self::$_node[$nodeKey];
 		list($config,$num)=explode('_',self::$_node[$nodeKey]);
+		echo $config;
 		if(!$config){
 			throw new Exception('Cache config Error');
 		}
 		
 		if(!isset(self::$_memcache[$config])){
-			self::$_memcache[$config]=new Memcache;
+			self::$_memcache[$config]=new Memcached();
 			list($host,$port)=explode(':',$config);
-			self::$_memcache[$config]->connect($host,$port);
+			self::$_memcache[$config]->addServer($host,$port);
 		}
-		
+
 		return self::$_memcache[$config];
 	}
 	
@@ -84,6 +110,7 @@ class memcacheHash{
 	 */
 	private static function _findServerNode($m=0,$b=0){
 		$total=count(self::$_nodeData);
+		
 		if($total!=0&&$b==0){
 			$b=$total-1;
 		}
@@ -92,7 +119,7 @@ class memcacheHash{
 			if(self::$_nodeData[$avg]==self::$_keyNode){
 				return self::$_nodeData[$avg];
 			}else if(self::$_keyNode<self::$_nodeData[$avg]&&($avg-1>=0)){
-				return self::_findServerNode($avg+1,$b);
+				return self::_findServerNode($m,$avg-1);
 			}else{
 				return self::_findServerNode($avg+1,$b);
 			}
@@ -115,14 +142,28 @@ class memcacheHash{
 		return self::_connectMemcache($key)->set($key,json_encode($value),$expire);
 	}
 	
+	/**
+	 * get key value
+	 * @param string $key
+	 * @return boolean
+	 */
+	public static function get($key){
+		return self::_connectMemcache($key)->get($key);
+	}
 	
-	public static function test(){
-		echo '<pre>';
-			print_r(self::$_node);
-		echo '</pre>';
-	} 
+	/**
+	 * rm key value
+	 * @param string $key 
+	 * @return boolean
+	 */
+	public static function rm($key){
+		return self::_connectMemcache($key)->delete($key);
+	}
+	
 }
 
-//test
-$Obj=MemcacheHash::getInstance();
-$Obj::test();
+//example
+$obj=MemcacheHash::getInstance();
+for($i=0;$i<100;$i++){
+	var_dump($obj::set($i,100));
+}
