@@ -36,3 +36,5 @@ ToolClass
 
 [memcache hash一致性](https://github.com/ruansheng/ToolClass/blob/master/MemcacheHash.php)
 
+[php socket 模拟GET请求](https://github.com/ruansheng/ToolClass/blob/master/php_socket_http.php)
+
