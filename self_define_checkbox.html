@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script src="js/jquery-1.8.3.min.js"></script>
+	<style type="text/css">
+	    *{
+			margin:0px;
+			padding:0px;
+		}
+		ul{
+			list-style-type:none;
+		}
+		.item_row{
+			width:170px;
+			height:27px;
+			line-height:27px;
+			text-align:center;
+			cursor:pointer;
+			border:1px solid #C7C7C7;
+		}
+		
+		.first{
+			margin-top:25px;
+		}
+		.first p{
+			background:#CDC5BF;
+			border-radius:5px;
+		}
+		.second-box li{
+			background:#F5F5F5;
+			border-radius:5px;
+			margin-top:2px;
+		}
+			
+	</style>
+</head>
+<body>
+	<div>
+		<div class="first">
+			<p class="first_title item_row" second="group_1">水果</p>
+			<ul class="second-box" id="group_1">
+				<li class="item_row" is_select="0" select_id="1">苹果</li>
+				<li class="item_row" is_select="0" select_id="2">梨子</li>
+				<li class="item_row" is_select="0" select_id="3">荔枝</li>
+			</ul>
+			<input type="hidden" id="value_group_1" name="shuiguo" value=""/>
+		</div>
+		<div class="first">
+			<p class="first_title item_row" second="group_2">蔬菜</p>
+			<ul class="second-box" id="group_2">
+				<li class="item_row" is_select="0" select_id="4">番茄</li>
+				<li class="item_row" is_select="0" select_id="5">白菜</li>
+				<li class="item_row" is_select="0" select_id="6">豆角</li>
+			</ul>
+			<input type="hidden" id="value_group_2" name="shucai" value=""/>
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+		$(function(){
+			/**
+			* 定义选择事件执行方法
+			* 作用: 处理选择的操作
+			*/
+			function selectEvent(_this){
+				//定义颜色常量
+				var select_yes='#FFA042'; //选中:黄色
+				var select_no='#F5F5F5'; //未选中:灰色
+				
+				var is_select=$(_this).attr('is_select');
+				if(is_select==0){
+					//设置为被选中
+					$(_this).attr('is_select','1')
+					$(_this).css('background',select_yes);
+				}else if(is_select==1){
+					//设置为不选中
+					$(_this).attr('is_select','0')
+					$(_this).css('background',select_no);
+				}	
+				
+				//获取被选择的值,拼接起来
+				var list=$(_this).parent().children();
+				var ids='';
+				for(var i=0;i<list.length;i++){
+					if(list.eq(i).attr('is_select')==1){
+						ids+=list.eq(i).attr('select_id')+',';
+					}
+				}
+				
+				//将选中得值设置到input中
+				var name=$(_this).parent().attr('id');
+				$('#value_'+name).val(ids);
+			}
+			
+			//------------------方案1----------------------
+			/**
+			* 点击一级菜单事件
+			* 作用: 二级菜单的展开与收缩
+			*/
+			$(".first_title").toggle(function(){
+				var id=$(this).attr("second");
+				$('#'+id).slideUp();
+			},function(){
+				var id=$(this).attr("second");
+				$('#'+id).slideDown();
+			});
+			
+			/**
+			* 点击二级菜单
+			* 作用: 二级菜单点击选中、取消选中
+			*/
+			$(".second-box li").click(function(){
+				var _this=this;
+				selectEvent(_this);
+			},function(){
+				var _this=this;
+				selectEvent(_this);
+			});
+			//----------------------------------------------
+			
+			//------------------方案2------------------------
+	 	    /**
+	         * 点击一级菜单事件
+	         * 作用: 二级菜单的展开与收缩
+	         */
+			/*
+	        $(".first_title").click(function(){
+	            var id=$(this).attr("second");
+	            var display=$('#'+id).css('display');
+	            if(display == 'none'){
+	                $('#'+id).slideDown();
+	            }else{
+	                $('#'+id).slideUp();
+	            }
+	        });
+			*/
+			
+	        /**
+	         * 点击二级菜单
+	         * 作用: 二级菜单点击选中、取消选中
+	         */
+			/*
+	        $(".second-box li").click(function(){
+	            var _this=this;
+	            selectEvent(_this);
+	        });
+			*/
+			//--------------------------------------------
+			
+		})
+	</script>
+</body>
+</html>
