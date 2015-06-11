@@ -39,3 +39,6 @@ ToolClass
 [php socket 模拟GET请求](https://github.com/ruansheng/ToolClass/blob/master/php_socket_http.php)
 
 [php ext开发之-清除编译缓存文件工具](https://github.com/ruansheng/ToolClass/blob/master/clean.sh)
+
+[html 自定义checkbox多选菜单](https://github.com/ruansheng/ToolClass/blob/master/self_define_checkbox.html)
+
