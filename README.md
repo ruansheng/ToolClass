@@ -42,4 +42,4 @@ ToolClass
 
 [html 自定义checkbox多选菜单](https://github.com/ruansheng/ToolClass/blob/master/self_define_checkbox.html)
 
-[html 自定义checkbox多选菜单](https://github.com/ruansheng/ToolClass/blob/master/img_zoom_big.html)
+[html 自定义图片放大器](https://github.com/ruansheng/ToolClass/blob/master/img_zoom_big.html)
