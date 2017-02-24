@@ -1,4 +1,5 @@
 <?php 
+date_default_timezone_set('Asia/ShangHai');
 include('./phpmailer/Smtp.class.php');
 include('./phpmailer/PHPMailer.class.php');
 /**
@@ -18,6 +19,12 @@ class MailService {
 	 * @var unknown
 	 */
 	private static $mailHost="smtp.qq.com";
+	
+	/**
+	 * 邮件服务器Host
+	 * @var unknown
+	 */
+	private static $mailPort= 25;
 	
 	/**
 	 * 发件人账号
@@ -43,7 +50,7 @@ class MailService {
 	* 发送文本邮件
 	*/
 	public static function sendTextMail($address,$title,$message){
-		$flag=self::$handler->_sendMail($address, $title, $message);
+		$flag=self::_sendMail($address, $title, $message);
 		return $flag;
 	}
 	
@@ -53,7 +60,7 @@ class MailService {
 	public static function sendHtmlMail($address,$title,$message){
 		self::$handler->IsHTML(true);  // send as HTML
 		self::$handler->AltBody ="text/html";
-		$flag=$this->_sendMail($address, $title, $message);
+		$flag=self::_sendMail($address, $title, $message);
 		return $flag;
 	}
 	
@@ -65,7 +72,7 @@ class MailService {
 	 * @return boolean
 	 */
 	private function _sendMail($address,$title,$message){
-		self::$handler->_addAddress($address);
+		self::_addAddress($address);
 		// 设置邮件正文
 		self::$handler->Body=$message;
 		// 设置邮件头的From字段。
@@ -76,6 +83,8 @@ class MailService {
 		self::$handler->Subject=$title;
 		// 设置SMTP服务器。
 		self::$handler->Host=self::$mailHost;
+		// 设置SMTP服务器端口。
+		self::$handler->Port=self::$mailPort;
 		// 设置为“需要验证”
 		self::$handler->SMTPAuth=true;
 		// 设置用户名和密码。
