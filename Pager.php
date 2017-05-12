@@ -148,5 +148,6 @@ class Pager {
 .pager-box .prev-pager{margin-left:10px;}
 .pager-box .ipager{margin-left:10px;}
 .pager-box .ipager a{margin-left:5px;}
+.pager-box .ipager .now-pager{color:red;}
 .pager-box .next-pager{margin-left:10px;}
 */
