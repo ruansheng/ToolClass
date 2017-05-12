@@ -47,3 +47,5 @@ ToolClass
 [Mysqllib](https://github.com/ruansheng/ToolClass/blob/master/Mysqllib.php)
 
 [Mysqllib测试](https://github.com/ruansheng/ToolClass/blob/master/testmysqllib.php)
+
+[分页类](https://github.com/ruansheng/ToolClass/blob/master/Pager.php)
