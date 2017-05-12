@@ -6,7 +6,7 @@ include './Mysqllib.php';
 	 'host' => '127.0.0.1',
 	 'port' => 3306,
 	 'user' => 'root',
-	 'passwd' => '19900918',
+	 'passwd' => 'xxxxx',
 	 'dbname' => 'nhbq'
  ];
  
