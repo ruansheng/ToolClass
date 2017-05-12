@@ -141,3 +141,12 @@ class Pager {
     }
 
 }
+
+/*
+.pager-box{text-align:center;margin-top:50px;margin-bottom:50px;}
+.pager-box .page-count{margin-left:10px;}
+.pager-box .prev-pager{margin-left:10px;}
+.pager-box .ipager{margin-left:10px;}
+.pager-box .ipager a{margin-left:5px;}
+.pager-box .next-pager{margin-left:10px;}
+*/
