@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mleme Admin</title>
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+        *{
+            margin:0px;
+            padding:0px;
+        }
+
+        .btn_addPic {
+            display: block;
+            position: relative;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn_addPic span {
+            display: block;
+        }
+        .btn_addPic em {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            overflow: hidden;
+            margin: 10px 5px 10px 0;
+            line-height: 20em;
+            vertical-align: middle;
+        }
+
+        .filePrew {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 400px;
+            height: 40px;
+            font-size: 100px;
+            /* 增大不同浏览器的可点击区域 */
+            opacity: 0;
+            /* 实现的关键点 */
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-inverse" style="border-radius:0px;">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/index/index">Mleme Admin</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-left">
+                <li><a href="/goods/loadgoods">导入商品</a></li>
+                <li><a href="/category/categorylist">栏目</a></li>
+                <li><a href="/goods/goodlist">商品</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">管理员 <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/admin/accounts">账号管理</a></li>
+                        <li><a href="/admin/my">我的账号</a></li>
+                        <li><a href="/admin/logout">退出</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+<div class="panel panel-primary" style="width:500px;margin:0 auto;margin-top:100px;">
+    <div class="panel-body">
+        上传商品信息
+    </div>
+    <hr/>
+    <div class="panel-body">
+        <div class="fileupload fileupload-new" style="width:180px;margin:0 auto;" data-provides="fileupload">
+            <a href="javascript:void(0);" class="btn_addPic btn btn-default btn-lg">
+                <span id="excel-text">
+                    <i class="glyphicon glyphicon-plus"></i>
+                    选择Excel文件
+                </span>
+                <input id="uploadfile" class="filePrew" type="file" style="width:180px;">
+            </a>
+        </div>
+        <input type="hidden" id="guid" value="<?php echo $guid;?>"/>
+        <button type="submit" style="width:200px;margin-left:135px;margin-top:30px;margin-bottom:60px;" class="btn btn-primary" id="upload">上传</button>
+
+        <div class="progress" id="progress" style="display:none;">
+            <div id="progress-line" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%;">
+                0%
+            </div>
+        </div>
+
+        <div class="progress" id="parse-progress" style="display:none;">
+            <div id="parse-progress-line" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                正在解析...
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="/static/js/jquery-1.11.3.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<script>
+
+    $(function(){
+
+        function countProgress(shardCount, index) {
+            $('#progress').show();
+
+            if(shardCount == index) {
+                $('#progress-line').attr('aria-valuenow', 100);
+                $('#progress-line').css('width', '100%');
+                $('#progress-line').text('100%');
+            } else {
+                var valuenow = parseInt(parseFloat(index / shardCount).toFixed(2) * 100);
+                $('#progress-line').attr('aria-valuenow', valuenow);
+                $('#progress-line').css('width', valuenow + '%');
+                $('#progress-line').text(valuenow + '%');
+            }
+        }
+
+        // 解析excel文件
+        function parseExcelFile(guid) {
+            $('#progress').hide();
+
+            $('#parse-progress').show();
+
+            //构造一个表单，FormData是HTML5新增的
+            var form = new FormData();
+            form.append("guid", guid);
+
+            //Ajax提交
+            $.ajax({
+                url: "/goods/parseGoodFile",
+                type: "POST",
+                data: form,
+                async: true,        //异步
+                processData: false,  //很重要，告诉jquery不要对form进行处理
+                contentType: false,  //很重要，指定为false才能形成正确的Content-Type
+                success: function(resp){
+                    if(resp.en == 200) {
+                        window.onbeforeunload = null;
+                        setTimeout(function() {
+                            window.href.reload();
+                        }, 1000);
+                    }
+                }
+            });
+        }
+
+        function upload(guid, name, size, shardSize, shardCount, index, start, file) {
+            //计算每一片的起始与结束位置
+            var end = Math.min(size, start + shardSize);
+
+            //构造一个表单，FormData是HTML5新增的
+            var form = new FormData();
+            form.append("data", file.slice(start, end));  //slice方法用于切出文件的一部分
+            form.append("name", name);
+            form.append("total", shardCount);             //总片数
+            form.append("index", index);                  //当前是第几片
+            form.append("guid", guid);
+
+            //Ajax提交
+            $.ajax({
+                url: "/goods/doLoadGoods",
+                type: "POST",
+                data: form,
+                async: true,        //异步
+                processData: false,  //很重要，告诉jquery不要对form进行处理
+                contentType: false,  //很重要，指定为false才能形成正确的Content-Type
+                success: function(resp){
+                    if(resp.en == 200) {
+                        countProgress(shardCount, index);
+                        if(index < shardCount) {
+                            upload(guid, name, size, shardSize, shardCount, index + 1, start + shardSize, file)
+                        } else {
+                            parseExcelFile(guid);
+                        }
+                    }
+                }
+            });
+        }
+
+        $("#upload").click(function() {
+
+            var guid = $("#guid").val();  //guid
+            var files = $("#uploadfile").get(0).files;
+
+            if(files.length == 0) {
+                return ;
+            }
+
+            // 设置按钮为不可点
+            $(this).attr("disabled", "disabled");
+
+            var file = files[0];  //文件对象
+
+            var name = file.name;        //文件名
+            var size = file.size;        //总大小
+
+            var shardSize = 1024 * 1024;    //以1MB为一个分片
+            var shardCount = Math.ceil(size / shardSize);  //总片数
+
+            // 第一次从0字节开始上传
+            var start = 0;
+
+            // 第一分片
+            var index = 1;
+
+            // 上传
+            upload(guid, name, size, shardSize, shardCount, index, start, file);
+
+            window.onbeforeunload = function (){
+                if(event.clientX>document.body.clientWidth && event.clientY < 0 || event.altKey){
+                    return "正在处理，请勿关闭页面";
+                }else{
+                    return "正在处理，请勿刷新页面";
+                }
+            };
+
+        });
+
+        $("#uploadfile").on('change', function(e){
+            var name = e.currentTarget.files[0].name;
+            $('#excel-text').text(name);
+        });
+
+    });
+
+
+</script>
+</html>
